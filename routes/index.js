@@ -14,7 +14,7 @@ module.exports=function(app){
 	app.get('/',checkNotLogin);
 	app.get('/',function(req,res){
 		res.render('login',{
-			title:'EasyOTO｜关注互联网创业',
+			title:'食品网上直销系统',
 			success:req.flash('success').toString(),
 			error:req.flash('error').toString()
 		});
@@ -92,7 +92,7 @@ module.exports=function(app){
 					return res.redirect('/index');			
 				}
 					res.render('index',{
-						title:'EasyOTO|关注互联网创业',
+						title:'食品网上直销系统',
 						user:req.session.user,
 						num:num,
 						shops:shops,
