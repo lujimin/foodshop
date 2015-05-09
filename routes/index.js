@@ -120,7 +120,7 @@ module.exports=function(app){
 					return res.redirect('/index');			
 				}
 					res.render('mall',{
-						title:'EasyOTO|关注互联网创业',
+						title:'食品网上直销系统',
 						user:req.session.user,
 						num:num,
 						shops:shops,
