@@ -1,5 +1,6 @@
 var crypto = require('crypto');
 var User = require('../models/user.js');
+var Admin = require('../models/admin.js');
 var fs=require('fs');
 var Post=require('../models/post.js');
 var Address=require('../models/address.js');
@@ -8,6 +9,42 @@ var Order=require('../models/order.js');
 var Comment=require('../models/comment.js');
 
 module.exports=function(app){
+
+//admin get
+//避免再次登录，如果登陆了可以直接访问
+app.get('/admin',checkNotLoginAdmin);
+app.get('/admin', function(req,res){
+	res.render('admin',{
+			title:'食品网上直销系统',
+			success:req.flash('success').toString(),
+			error:req.flash('error').toString()
+	}); 
+});
+
+//admin post
+//管理员登录，提交数据时请求的url
+app.post('/admin',function(req,res){
+		var name=req.body.name;
+		var password=req.body.password;
+		console.log(password);
+		var md5=crypto.createHash('md5');
+		var password=md5.update(password).digest('hex');
+		var err=0;
+		Admin.get(name,function(err,user){
+			if (!user)
+			{	//用户不存在
+				return res.json({success:4});
+			}
+			if(user.password != password)
+			{	
+				return res.json({success:3});
+			}
+			req.session.admin=user.name;
+			res.json({success:1});
+		});
+
+});
+
 
 	//app.get('/') not login
 
@@ -23,7 +60,7 @@ module.exports=function(app){
 
 	//app.post('/login') not login
 
-	app.post('/login',checkNotLogin);
+	//app.post('/login',checkNotLogin);
 	app.post('/login',function(req,res){
 			var name=req.body.name;
 			var password=req.body.password;
@@ -50,8 +87,8 @@ module.exports=function(app){
 
 	app.post('/reg',checkNotLogin);
 	app.post('/reg',function(req,res){
-		var name=req.body.name;
-		var password=req.body.password;
+			var name=req.body.name;
+			var password=req.body.password;
 			var md5=crypto.createHash('md5');
 			var password=md5.update(req.body.password).digest('hex');
 			var newUser= new User({
@@ -59,22 +96,22 @@ module.exports=function(app){
 			"password":password
 			});
 			User.get(newUser.name,function(err,user){
-			if (user){
-				//用户已经存在
-				return res.json({success:4});			
+				if (user){
+					//用户已经存在
+					return res.json({success:4});			
 				}
-			newUser.save(function(err){
-				if(err){
-					return res.json({success:3});
-						
-				}
-				path="./public/uploads/"+newUser.name;
-				fs.mkdir(path,function(err,path){
-				req.session.user=newUser.name;
-				res.json({success:1});
+				newUser.save(function(err){
+					if(err){
+						return res.json({success:3});
+							
+					}
+					path="./public/uploads/"+newUser.name;
+					fs.mkdir(path,function(err,path){
+					req.session.user=newUser.name;
+					res.json({success:1});
+					});
+				});
 			});
-			});
-});
 	});
 
 
@@ -120,7 +157,7 @@ module.exports=function(app){
 					return res.redirect('/index');			
 				}
 					res.render('mall',{
-						title:'食品网上直销系统',
+						title:'EasyOTO|关注互联网创业',
 						user:req.session.user,
 						num:num,
 						shops:shops,
@@ -152,38 +189,38 @@ module.exports=function(app){
 				Post.getAd(boss,function(err,ads){
 					if(err){
 					return res.redirect('/index');			
-				}
-				User.pvAdd(boss,function(err,back){
-					res.render('shop',{
-						title:"欢迎光临"+boss+"店铺",
-						user:req.session.user,
-						num:num,
-						posts:posts,
-						length:posts.length,
-						boss:boss,
-						ads:ads,
-						page:page,
-						success:req.flash('success').toString(),
-						error:req.flash('error').toString()
+					}
+					User.pvAdd(boss,function(err,back){
+						res.render('shop',{
+							title:"欢迎光临"+boss+"店铺",
+							user:req.session.user,
+							num:num,
+							posts:posts,
+							length:posts.length,
+							boss:boss,
+							ads:ads,
+							page:page,
+							success:req.flash('success').toString(),
+							error:req.flash('error').toString()
+						});
 					});
 				});
 			});
 		});
-	});
-});		
+	});		
 
 	//app.get('/hire')
 
 	app.get('/hire',checkLogin);
 	app.get('/hire',function(req,res){
 		Cart.getNum(req.session.user,function(err,num){
-		res.render('hire',{
-			title:"我要兼职",
-			num:num,
-			user:req.session.user
-		})
-	});
+			res.render('hire',{
+				title:"我要兼职",
+				num:num,
+				user:req.session.user
+			})
 		});
+	});
 
  	//app.get('/:shop/search') login
  	app.get('/shop/:boss/search',checkLogin);
@@ -213,26 +250,26 @@ module.exports=function(app){
 					return res.redirect('/index');			
 				}
 			Address.get(req.session.user,state,function(err,adds){
-				if(err){
-					return res.redirect('/index');			
-				}
-				Cart.getNum(req.session.user,function(err,num){
 					if(err){
-					return res.redirect('/index');			
-				}
-				res.render('cart',{
+						return res.redirect('/index');			
+					}
+					Cart.getNum(req.session.user,function(err,num){
+						if(err){
+						return res.redirect('/index');			
+					}
+					res.render('cart',{
 					'title':"我的购物车",
-					user:req.session.user,
-					carts:carts,
-					adds:adds,
-					num:num,
-					success:req.flash('success').toString(),
-					error:req.flash('error').toString()
+						user:req.session.user,
+						carts:carts,
+						adds:adds,
+						num:num,
+						success:req.flash('success').toString(),
+						error:req.flash('error').toString()
+					});
 				});
 			});
 		});
 	});
-});
 	//app.post('/cart') login
 	app.post('/cart',checkLogin);
 	app.post('/cart',function(req,res){
@@ -1031,10 +1068,7 @@ console.log('auth failed!');
 res.send('auth failed');
 
 }
-
-
 });
-
 
 //weixin post
 
@@ -1080,7 +1114,25 @@ function checkNotLogin(req,res,next){
 		return res.redirect('/index');
 	}
 	next();
-}	
+}
+//checkLoginAdmin
+function checkLoginAdmin(req,res,next){
+	console.log('req.session.admin');
+	if(!req.session.admin){
+		req.flash('error','未登录');
+		return res.redirect('/admin');
+	}
+	next();
+}
+
+//checkNotLoginAdmin
+function checkNotLoginAdmin(req,res,next){
+	if(req.session.admin){
+		req.flash('error','已登录');
+		return res.redirect('/admin/index');
+	}
+	next();
+}		
 
 
 function auth(token,timestamp,nonce,signature){
