@@ -1207,8 +1207,6 @@ app.get('/weixin',function(req,res){
 
 //weixin post
 
-
-
 app.post('/weixin',function(req,res){
 	console.log(query);
 	var token='weixin';
