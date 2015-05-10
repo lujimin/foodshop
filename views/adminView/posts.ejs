@@ -68,7 +68,10 @@
 			</div>
 		</div>
 	</div>
-	
+	<div>
+        <ul class="pagination">
+        </ul>
+    </div>
 </div>
 </div>
 </div>
@@ -76,22 +79,22 @@
 			$.ajax({
 	            	type:"GET",
 	            	//预留，数据库分页
-	            	url:"http://localhost:8888/admin/postsList?page=1&size=100",
+	            	url:"http://localhost:8888/admin/postsList?page=1&size=10",
 	            	success:function(data){
-          					for (var i = 0; i < data.length; i++) {
-          						var pid = data[i].pid;
-          						var name = data[i].name;
-	          					var boss = data[i].boss;
-	          					var pic = data[i].pic;
-	          					var price = data[i].price;
-	          					var iprice = data[i].iprice;
-	          					var fbrand = data[i].fbrand;
-	          					var mbrand = data[i].mbrand;
-	          					var lbrand = data[i].lbrand;
-	          					var desp = data[i].desp;
-	          					var time = data[i].time.minute;
-	          					var sold = data[i].sold;
-	          					var state = data[i].state;
+          					for (var i = 0; i < data.doc.length; i++) {
+          						var pid = data.doc[i].pid;
+          						var name = data.doc[i].name;
+	          					var boss = data.doc[i].boss;
+	          					var pic = data.doc[i].pic;
+	          					var price = data.doc[i].price;
+	          					var iprice = data.doc[i].iprice;
+	          					var fbrand = data.doc[i].fbrand;
+	          					var mbrand = data.doc[i].mbrand;
+	          					var lbrand = data.doc[i].lbrand;
+	          					var desp = data.doc[i].desp;
+	          					var time = data.doc[i].time.minute;
+	          					var sold = data.doc[i].sold;
+	          					var state = data.doc[i].state;
 	          					if(state==1){
 	          						state="在售";
 	          					}else{
@@ -99,6 +102,7 @@
 	          					}
 	          					$("#contextBody").append("<tr><td class=\"center\"><label><input type=\"checkbox\" class=\"ace\" /><span class=\"lbl\"></span></label></td><td><img style=\"width:50px;height:50px\" src=\""+pic+"\"/></td><td>"+name+"</td><td>"+boss+"</td><td>"+price+"</td><td>"+iprice+"</td><td>"+fbrand+"</td><td>"+mbrand+"</td><td>"+lbrand+"</td><td>"+desp+"</td><td>"+time+"</td><td>"+sold+"</td><td>"+state+"</td><td class=\"hidden-480\"><a href=\"javascript:void(0)\" onclick=\"deletePosts('"+pid+"')\" class=\"btn btn-small btn-success \">删除</a></td></tr>");
           					}
+          					createPage(10,5,data.totalSize,2);
 	            	}
           		});
 

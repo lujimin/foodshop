@@ -1,6 +1,7 @@
 var mongodb=require('./db');
 var User=require('./user');
 var Post=require('./post');
+var util=require('util');
 
 function Admin(user){
 	this.name=user.name;
@@ -57,12 +58,20 @@ Admin.getUserList = function(params, callback){
         mongodb.close();
         return callback(err);
       }
+      var totalSize = {};
+      collection.count(function(err, result){
+        console.log(result);
+        totalSize = result;
+      });
       //查找用户名 name 值为 name文档
-      collection.find().toArray(function(err, doc){
+      collection.find().limit(size).skip(page).toArray(function(err, doc){
         //console.log(doc);
         mongodb.close();
+        var result = {};
         if(doc){
-          callback(null,doc);//成功！返回查询的管理员信息
+          result.doc = doc;
+          result.totalSize = totalSize;
+          callback(null,result);//成功！返回查询的管理员信息
         } else {
           callback(err, null);//失败！返回null
         }
@@ -90,14 +99,14 @@ Admin.removeUser = function(params, callback){
         }
     });
 }
-//获取用户列表
+//获取商品列表
 Admin.getPostsList = function(params, callback){
   //打开数据库
   mongodb.open(function(err, db){
     if(err){
       return callback(err);
     }
-    //读取 users 集合
+    //读取 posts 集合
     db.collection('posts', function(err, collection){
       //数据库分页
       var page = parseInt(params.page);
@@ -108,12 +117,20 @@ Admin.getPostsList = function(params, callback){
         mongodb.close();
         return callback(err);
       }
+      var totalSize = {};
+      collection.count(function(err, result){
+        console.log(result);
+        totalSize = result;
+      });
       //查找用户名 name 值为 name文档
-      collection.find().toArray(function(err, doc){
+      collection.find().limit(size).skip(page).toArray(function(err, doc){
         //console.log(doc);
+        var result = {};
         mongodb.close();
         if(doc){
-          callback(null,doc);//成功！返回查询的管理员信息
+          result.doc = doc;
+          result.totalSize = totalSize;
+          callback(null,result);//成功！返回查询的管理员信息
         } else {
           callback(err, null);//失败！返回null
         }
@@ -134,3 +151,42 @@ Admin.removePosts = function(params, callback){
     });
 }
 
+//获取订单列表
+Admin.getOrdersList = function(params, callback){
+  //打开数据库
+  mongodb.open(function(err, db){
+    if(err){
+      return callback(err);
+    }
+    //读取 orders 集合
+    db.collection('orders', function(err, collection){
+      //数据库分页
+      var page = parseInt(params.page);
+      var size = parseInt(params.size);
+      page = (page-1)*size;
+      console.log(page + "  " + size);
+      if(err){
+        mongodb.close();
+        return callback(err);
+      }
+      var totalSize = {};
+      collection.count(function(err, result){
+        console.log(result);
+        totalSize = result;
+      });
+      //查找用户名 name 值为 name文档
+      collection.find().limit(size).skip(page).toArray(function(err, doc){
+        //console.log(doc);
+        var result = {};
+        mongodb.close();
+        if(doc){
+          result.doc = doc;
+          result.totalSize = totalSize;
+          callback(null,result);//成功！返回查询的管理员信息
+        } else {
+          callback(err, null);//失败！返回null
+        }
+      });
+    });
+  });
+}

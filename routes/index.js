@@ -68,7 +68,7 @@ app.get('/admin/userList', function(req,res){
 			return res.json({error:1});
 		}
 		//var userResult = util.inspect(userList)
-		//console.log(userList[0]);
+		//console.log(userList);
 		return res.json(userList);
 		//res.end();
 	})
@@ -180,6 +180,26 @@ app.get('/admin/deletePosts', function(req,res){
 		}else{
 			return res.json({success:1});
 		}
+	})
+});
+//获取订单列表视图
+app.get('/admin/orders',checkLoginAdmin);
+app.get('/admin/orders', function(req,res){
+	res.render('adminView/orders',{
+			title:'食品网上直销系统',
+			success:req.flash('success').toString(),
+			error:req.flash('error').toString()
+	}); 
+});
+//获取订单列表
+app.get('/admin/ordersList',checkLoginAdmin);
+app.get('/admin/ordersList', function(req,res){
+	var params = urlR.parse(req.url, true).query;
+	Admin.getOrdersList(params, function(err, postsList){
+		if(!postsList){
+			return res.json({error:1});
+		}
+		return res.json(postsList);
 	})
 });
 	//app.get('/') not login

@@ -1,0 +1,110 @@
+<div id="main">
+<div class="breadcrumbs" id="breadcrumbs">
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+			<a href="#">控制台</a>
+		</li>
+		
+		<li>
+			<span style="color:green">订单管理</span>
+		</li>
+	</ul><!-- .breadcrumb -->
+</div>
+	
+<div class="page-content">
+<div class="page-header">
+<h1>
+订单
+<small>
+	<i class="icon-double-angle-right"></i>
+	订单列表
+	</small>
+</h1>
+</div><!-- /.page-header -->
+
+<div class="row">
+<div class="col-xs-12">
+	<div class="hr hr-18 dotted hr-double"></div>
+	
+	<div class="row">
+		<div class="col-xs-12">
+			<h3 class="header smaller lighter blue">订单列表</h3>
+			<div class="table-responsive">
+				<table id="sample-table-2" class="table table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th class="center">
+								<label>
+									<input type="checkbox" class="ace" />
+									<span class="lbl"></span>
+								</label>
+							</th>
+							<th>
+								商品图片
+							</th>
+							<th>商品名称</th>
+							<th>商品价格</th>
+							<th>
+								商家
+							</th>
+							<th>购买者</th>
+							<th>收货人</th>
+							<th>收货地址</th>
+							<th>电话</th>
+							<th>购买数量</th>
+							<th >购买时间</th>
+							<th>订单状态</th>
+						</tr>
+					</thead>
+					
+					<tbody id = "contextBody">
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div>
+        <ul class="pagination">
+        </ul>
+    </div>
+	
+</div>
+</div>
+</div>
+<script defer>
+			$.ajax({
+	            	type:"GET",
+	            	//预留，数据库分页
+	            	url:"http://localhost:8888/admin/ordersList?page=1&size=10",
+	            	success:function(data){
+          					for (var i = 0; i < data.doc.length; i++) {
+          						var oid = data.doc[i].oid;
+          						var pid = data.doc[i].pid;
+          						var gName = data.doc[i].name;
+	          					var pic = data.doc[i].pic;
+	          					var price = data.doc[i].price;
+	          					var buyer = data.doc[i].buyer;
+	          					var seller = data.doc[i].seller;
+	          					var ip = data.doc[i].ip;
+	          					var phone = data.doc[i].phone;
+	          					var who = data.doc[i].who;
+	          					var time = data.doc[i].time.minute;
+	          					var amount = data.doc[i].amount;
+	          					var state = data.doc[i].state;
+	          					switch(state){
+	          						case 1 : state="待处理"; break;
+	          						case 2 : state="待发货"; break;
+	          						case 3 : state="已发货"; break;
+	          						case 4 : state="已收货"; break;
+	          						case 5 : state="已付款"; break;
+	          						case 6 : state="已取消"; break;
+	          						default: state="未知"
+	          					}
+	          					$("#contextBody").append("<tr><td class=\"center\"><label><input type=\"checkbox\" class=\"ace\" /><span class=\"lbl\"></span></label></td><td><img style=\"width:50px;height:50px\" src=\""+pic+"\"/></td><td>"+gName+"</td><td>"+price+"</td><td>"+seller+"</td><td>"+buyer+"</td><td>"+who+"</td><td>"+ip+"</td><td>"+phone+"</td><td>"+amount+"</td><td>"+time+"</td><td>"+state+"</td></tr>");
+          					}
+          					createPage(10,5,data.totalSize,3);
+	            	}
+          		});
+</script>

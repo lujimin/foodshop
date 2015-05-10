@@ -35,10 +35,10 @@
             url:'/admin',
             success:function(data){
                 if(data.success==4){
-                  $("#tips").text("该用户名不存在!");
+                  alert("用户名不存在");
                 }
                 if(data.success==3){
-                  $("#tips").text("密码不正确!");
+                  alert("密码不正确");
                 }
                 if(data.success==1){
                   window.location.href="/admin/index";
