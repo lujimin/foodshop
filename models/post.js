@@ -515,7 +515,6 @@ Post.getOne=function(pid,callback){
 
 Post.remove=function(id,callback){
 
-<<<<<<< HEAD
 mongodb.open(function(err,db){
 	if(err){return callback(err);}
 	db.collection('posts',function(err,collection){
@@ -533,14 +532,6 @@ mongodb.open(function(err,db){
 });
 });
 }
-
-
-
-//search post
-
-
-
-
 
 
 Post.search=function(boss,keyword,callback){
