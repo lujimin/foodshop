@@ -7,6 +7,9 @@ var Address=require('../models/address.js');
 var Cart=require('../models/cart.js');
 var Order=require('../models/order.js');
 var Comment=require('../models/comment.js');
+//url模块，解析url时使用
+var urlR=require('url');
+var util=require('util');
 
 module.exports=function(app){
 
@@ -39,10 +42,44 @@ app.post('/admin',function(req,res){
 			{	
 				return res.json({success:3});
 			}
+			console.log(user);
 			req.session.admin=user.name;
 			res.json({success:1});
 		});
 
+});
+
+//管理员主界面
+app.get('/admin/index',checkNotLoginAdmin);
+app.get('/admin/index', function(req,res){
+	res.render('adminView/index',{
+			title:'食品网上直销系统',
+			success:req.flash('success').toString(),
+			error:req.flash('error').toString()
+	}); 
+});
+//获取用户列表
+app.get('/admin/userList',checkNotLoginAdmin);
+app.get('/admin/userList', function(req,res){
+	var params = urlR.parse(req.url, true).query;
+	Admin.getUserList(params, function(err, userList){
+		if(!userList){
+			return res.json({error:1});
+		}
+		//var userResult = util.inspect(userList)
+		//console.log(userList[0]);
+		return res.json(userList);
+		//res.end();
+	})
+});
+//获取用户列表视图
+app.get('/admin/user',checkNotLoginAdmin);
+app.get('/admin/user', function(req,res){
+	res.render('adminView/user',{
+			title:'食品网上直销系统',
+			success:req.flash('success').toString(),
+			error:req.flash('error').toString()
+	}); 
 });
 
 
