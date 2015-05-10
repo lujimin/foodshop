@@ -533,28 +533,6 @@ mongodb.open(function(err,db){
 });
 });
 }
-=======
-	mongodb.open(function(err,db){
-
-		if(err){return callback(err);}
-		db.collection('posts',function(err,collection){
-			if(err){mongodb.close();return callback(err);}
-
-			collection.remove({name:name},function(err,doc){
-				mongodb.close();
-				if(doc)
-				{
-					callback(err,doc);
-				} else {
-					callback(err,null);
-				}
-
-			});	
-		});
-	});
-
-};
->>>>>>> 713d4d0f043b1ad5f4c46648dd5a7a69d72c73d2
 
 
 
