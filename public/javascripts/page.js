@@ -116,9 +116,9 @@ function orderKind(pageIndex){
 	          						default: state="未知"
 	          					}
 	          					if(html){
-	          						html = html + "<tr><td class=\"center\"><label><input type=\"checkbox\" class=\"ace\" /><span class=\"lbl\"></span></label></td><td><img style=\"width:50px;height:50px\" src=\""+pic+"\"/></td><td>"+gName+"</td><td>"+price+"</td><td>"+seller+"</td><td>"+buyer+"</td><td>"+who+"</td><td>"+ip+"</td><td>"+phone+"</td><td>"+amount+"</td><td>"+time+"</td><td>"+state+"</td></tr>";
+	          						html = html + "<tr><td class=\"center\"><label><input type=\"checkbox\" class=\"ace\" /><span class=\"lbl\"></span></label></td><td>"+oid+"</td><td><img style=\"width:50px;height:50px\" src=\""+pic+"\"/></td><td>"+gName+"</td><td>"+price+"</td><td>"+seller+"</td><td>"+buyer+"</td><td>"+who+"</td><td>"+ip+"</td><td>"+phone+"</td><td>"+amount+"</td><td>"+time+"</td><td>"+state+"</td></tr>";
 	          					}else{
-          							html ="<tr><td class=\"center\"><label><input type=\"checkbox\" class=\"ace\" /><span class=\"lbl\"></span></label></td><td><img style=\"width:50px;height:50px\" src=\""+pic+"\"/></td><td>"+gName+"</td><td>"+price+"</td><td>"+seller+"</td><td>"+buyer+"</td><td>"+who+"</td><td>"+ip+"</td><td>"+phone+"</td><td>"+amount+"</td><td>"+time+"</td><td>"+state+"</td></tr>";
+          							html ="<tr><td class=\"center\"><label><input type=\"checkbox\" class=\"ace\" /><span class=\"lbl\"></span></label></td><td>"+oid+"</td><td><img style=\"width:50px;height:50px\" src=\""+pic+"\"/></td><td>"+gName+"</td><td>"+price+"</td><td>"+seller+"</td><td>"+buyer+"</td><td>"+who+"</td><td>"+ip+"</td><td>"+phone+"</td><td>"+amount+"</td><td>"+time+"</td><td>"+state+"</td></tr>";
           						}
           					}
           					document.getElementById("contextBody").innerHTML=html;
