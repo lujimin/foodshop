@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
@@ -39,7 +39,6 @@
 				<div class="navbar-header pull-right" role="navigation">
 					<ul class="nav ace-nav">
 						<li class="light-blue">
-							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
 								<img class="nav-user-photo" src="/images/user.jpg" alt="Jason's Photo" />
 								<span class="user-info">
 									<small>欢迎光临,</small>
@@ -47,17 +46,11 @@
 								</span>
 
 								<i class="icon-caret-down"></i>
-							</a>
-
-							<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-
-								<li>
-									<a href="#">
-										<i class="icon-off"></i>
+						</li>
+						<li class="light-blue">
+						<a href="javascript:void(0)" onclick="adminLogout()">
 										退出
-									</a>
-								</li>
-							</ul>
+						</a>
 						</li>
 					</ul><!-- /.ace-nav -->
 				</div><!-- /.navbar-header -->
@@ -135,7 +128,7 @@
 							</a>
 							<ul class="submenu">
 								<li>
-									<a href="tables.html" onclick="getResult('goodsList')">
+									<a href="javascript:void(0)" onclick="getResult('posts')">
 										<i class="icon-double-angle-right"></i>
 										查看所有商品
 									</a>
@@ -153,7 +146,7 @@
 
 							<ul class="submenu">
 								<li>
-									<a href="tables.html" onclick="getResult('orderList')">
+									<a href="javascript:void(0)" onclick="getResult('orders')">
 										<i class="icon-double-angle-right"></i>
 										查看所有订单
 									</a>
@@ -365,7 +358,6 @@
 				
 			
 			})
-
 			function getResult(dis){
 				var distination = "http://localhost:8888/admin/" + dis;
 		                $.ajax({
@@ -373,6 +365,16 @@
 	            			url:distination,
 	            			success:function(result){
 		                		set_innerHTML("targetDiv", result);
+	            			}
+          				});
+			}
+
+			function adminLogout(){
+					$.ajax({
+	            			type:"GET",
+	            			url:"http://localhost:8888/admin/adminLogout",
+	            			success:function(result){
+		                			window.location.href="/admin";
 	            			}
           				});
 			}

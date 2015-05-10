@@ -527,28 +527,25 @@ mongodb.open(function(err,db){
 //remove
 
 
-Post.remove=function(name,callback){
+Post.remove=function(id,callback){
 
 mongodb.open(function(err,db){
-
 	if(err){return callback(err);}
 	db.collection('posts',function(err,collection){
 	if(err){mongodb.close();return callback(err);}
-	
-	collection.remove({name:name},function(err,doc){
-	mongodb.close();
-	if(doc)
-	{
-	callback(err,doc);
-	} else {
-	callback(err,null);
-		}
-
-		});	
-	});
+	id=parseInt(id);
+	collection.remove({pid:id},{safe:true},function(err,result){
+          mongodb.close();
+          if (err) {
+          	console.log(err);
+          callback(err,null); 
+        }else{
+          callback(null,result);
+        }
+    });
 });
-
-};
+});
+}
 
 
 

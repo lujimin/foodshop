@@ -1,3 +1,4 @@
+<div id="main">
 <div class="breadcrumbs" id="breadcrumbs">
 	<ul class="breadcrumb">
 		<li>
@@ -63,28 +64,108 @@
 	
 </div>
 </div>
-
+</div>
 <script defer>
 			$.ajax({
 	            	type:"GET",
-	            	url:"http://localhost:8888/admin/userList?page=1&size=20",
+	            	//预留，数据库分页
+	            	url:"http://localhost:8888/admin/userList?page=1&size=100",
 	            	success:function(data){
           					for (var i = 0; i < data.length; i++) {
           						var uid = data[i].uid;
           						var name = data[i].name;
 	          					var role = data[i].role;
 	          					if(role==1){
-	          						role="卖家";
-	          					}else{
 	          						role="买家";
+	          					}else{
+	          						role="卖家";
 	          					}
 	          					var email = data[i].email;
 	          					var phone = data[i].contact;
 	          					var time = data[i].time.minute;
-	          					$("#contextBody").append("<tr><td class=\"center\"><label><input type=\"checkbox\" class=\"ace\" /><span class=\"lbl\"></span></label></td><td><a href=\"#\">"+name+"</a></td><td>"+role+"</td><td class=\"hidden-480\">"+email+"</td><td>"+phone+"</td><td class=\"hidden-480\"><span class=\"label label-sm label-warning\">"+time+"</span></td><td class=\"hidden-480\"><span class=\"label label-sm label-warning\"><a href=\"/admin/delete?id="+uid+"\"><span style=\"font-size:16px;color:black\">删除</span></a></span></td></tr>");
-          					};
-	            	},
-	          		error:function(data){
-	          		}
+	          					$("#contextBody").append("<tr><td class=\"center\"><label><input type=\"checkbox\" class=\"ace\" /><span class=\"lbl\"></span></label></td><td><a href=\"#\">"+name+"</a></td><td>"+role+"</td><td class=\"hidden-480\">"+email+"</td><td>"+phone+"</td><td class=\"hidden-480\"><span class=\"label label-primary\" style=\"font-size:15px;\">"+time+"</span></td><td class=\"hidden-480\"><a href=\"javascript:void(0)\" onclick=\"updateUser('"+name+"')\" class=\"btn btn-small btn-success \">编辑</a>&nbsp;<a href=\"javascript:void(0)\" onclick=\"deleteUser('"+name+"')\" class=\"btn btn-small btn-success \">删除</a></td></tr>");
+          					}
+	            	}
           		});
+         function updateUser(name){
+         	$.ajax({
+	            	type:"GET",
+	            	//预留，数据库分页
+	            	url:"http://localhost:8888/admin/updateUser?name="+name,
+	            	async: false,
+	            	success:function(data){
+	            			$.ajax({
+				            	type:"GET",
+				            	//预留，数据库分页
+				            	url:"http://localhost:8888/admin/updateUserView",
+				            	async: false,
+				            	success:function(result){
+				            		//set_innerHTML("main", result);
+			          				document.getElementById("main").innerHTML=result;			
+	            				}
+	    					});
+	    					setData(data);
+	            	}
+          	});
+         }
+
+         function setData(data){
+         	document.getElementById('userName').value=data.name;
+         	var ur;
+         	if(data.role == 1){
+         		ur = "买家";
+         	}else{
+         		ur = "卖家"
+         	}
+         	document.getElementById('role').value= ur;
+         	document.getElementById('email').value=data.email;
+         	document.getElementById('phone').value=data.contact;
+         	document.getElementById('date').value=data.time.minute;
+         }
+//提交新的用户信息
+	function submitInfo(){
+					var name=$("#userName").val();
+          			var email=$("#email").val();
+          			var contact=$("#phone").val();
+          			if(!name || !email || !contact){
+          				alert("信息不全");
+          				return false;
+          			}
+          			var data = {};
+          			data.name=name;
+            		data.email=email;
+            		data.contact=contact;
+					$.ajax({
+	            			type:"POST",
+				            data:JSON.stringify(data),
+				            contentType:'application/json',
+				            url:'/admin/updateUserInfo',
+				            success:function(data){
+				                if(data.success==1){
+				                  alert("用户信息更新成功");
+				                  getResult("user");
+				                }else{
+				                	alert("用户信息更新失败");
+				                	//window.location.href="/admin/index";
+				                }
+				            }
+          			});
+	}
+
+	function deleteUser(name){
+         	$.ajax({
+	            	type:"GET",
+	            	//预留，数据库分页
+	            	url:"http://localhost:8888/admin/deleteUser?name="+name,
+	            	success:function(data){
+	            		if(data.success==1){
+	            			alert("删除成功");
+	            			getResult("user");
+	            			//window.location.href="/admin/index";
+	            		}else{
+	            			alert("删除失败");
+	            		}
+	            	}
+          	});
+         }
 </script>

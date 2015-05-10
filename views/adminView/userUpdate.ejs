@@ -1,0 +1,56 @@
+	<div class="page-header">
+		<h1>编辑用户信息</h1>
+	</div>
+		<form class="form-horizontal" name="form">
+			<div class="form-group">
+				<label class="col-sm-1 control-label"></label>
+				<div class="col-sm-5">
+					<input type="hidden" class="form-control" placeholder="请输入用户名" required disabled/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label"></label>
+				<label class="col-sm-1 control-label"><i class="text-danger">*</i> 用户名：</label>
+				<div class="col-sm-5">
+					<input type="text" name="name"  id="userName" class="form-control" placeholder="请输入用户名" required disabled/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label"></label>
+				<label class="col-sm-1 control-label"><i class="text-danger">*</i> 用户类型：</label>
+				<div class="col-sm-5">
+					<input type="text" name="role"  id="role" class="form-control" placeholder="请输入用户类型" required disabled/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label"></label>
+				<label class="col-sm-1 control-label"><i class="text-danger">*</i> email：</label>
+				<div class="col-sm-5">
+					<input type="text" name="email"  id="email" class="form-control" placeholder="请输入email" required />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label"></label>
+				<label class="col-sm-1 control-label"><i class="text-danger">*</i> 电话：</label>
+				<div class="col-sm-5">
+					<input type="text" name="contact"  id="phone" class="form-control" placeholder="请输入电话" required />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label"></label>
+				<label class="col-sm-1  control-label"><i class="text-danger">*</i> 注册时间：</label>
+				<div class="col-sm-5">
+					<input type="text" id="date" class="form-control" placeholder="请输入注册时间" required disabled/>
+				</div>
+			</div>
+			<div class="form-group ">
+				<label class="col-sm-3 control-label"></label>
+				<div class="col-sm-offset-1 col-sm-8">
+					<a class="btn btn-primary col-sm-2" onclick="submitInfo()">
+						<span>保存</span>
+					</a>
+					<label class="col-sm-1"></label>
+					<a class="btn btn-primary col-sm-2 col-sm-offset-2" onclick="history.go(-1)">取消</a>
+				</div>
+			</div>
+		</form>

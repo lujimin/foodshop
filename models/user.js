@@ -131,6 +131,59 @@ User.get = function(name, callback){//读取用户信息
     });
   });
 };
+//update user
+User.update = function(user, callback){//读取用户信息
+  //打开数据库
+  mongodb.open(function(err, db){
+    if(err){
+      return callback(err);
+    }
+    //读取 users 集合
+    db.collection('users', function(err, collection){
+      if(err){
+        mongodb.close();
+        return callback(err);
+      }
+      //update
+      var userName = user.name;
+      var userEmail = user.email;
+      var userPhone = user.contact;
+      collection.update({name:userName},{$set:{contact:userPhone,email:userEmail}},{safe:true},function(err, result){
+        mongodb.close();
+        if (!result) {
+          callback(err,null); 
+        }else{
+          callback(null,result);
+        }
+      });//update
+    });
+  });
+};
+//remove user
+User.remove = function(userName, callback){//读取用户信息
+  //打开数据库
+  mongodb.open(function(err, db){
+    if(err){
+      return callback(err);
+    }
+    //读取 users 集合
+    db.collection('users', function(err, collection){
+      if(err){
+        mongodb.close();
+        return callback(err);
+      }
+      //remove
+      collection.remove({name:userName},{safe:true},function(err,result){
+          mongodb.close();
+          if (err) {
+          callback(err,null); 
+        }else{
+          callback(null,result);
+        }
+      });
+  });
+  });
+};
 
 //get shop contact
 

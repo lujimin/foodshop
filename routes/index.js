@@ -1,6 +1,7 @@
 var crypto = require('crypto');
 var User = require('../models/user.js');
 var Admin = require('../models/admin.js');
+var Post = require('../models/post.js');
 var fs=require('fs');
 var Post=require('../models/post.js');
 var Address=require('../models/address.js');
@@ -43,14 +44,14 @@ app.post('/admin',function(req,res){
 				return res.json({success:3});
 			}
 			console.log(user);
-			req.session.admin=user.name;
+			req.session.admin=user.username;
 			res.json({success:1});
 		});
 
 });
 
 //管理员主界面
-app.get('/admin/index',checkNotLoginAdmin);
+app.get('/admin/index',checkLoginAdmin);
 app.get('/admin/index', function(req,res){
 	res.render('adminView/index',{
 			title:'食品网上直销系统',
@@ -59,7 +60,7 @@ app.get('/admin/index', function(req,res){
 	}); 
 });
 //获取用户列表
-app.get('/admin/userList',checkNotLoginAdmin);
+app.get('/admin/userList',checkLoginAdmin);
 app.get('/admin/userList', function(req,res){
 	var params = urlR.parse(req.url, true).query;
 	Admin.getUserList(params, function(err, userList){
@@ -73,7 +74,7 @@ app.get('/admin/userList', function(req,res){
 	})
 });
 //获取用户列表视图
-app.get('/admin/user',checkNotLoginAdmin);
+app.get('/admin/user',checkLoginAdmin);
 app.get('/admin/user', function(req,res){
 	res.render('adminView/user',{
 			title:'食品网上直销系统',
@@ -82,7 +83,105 @@ app.get('/admin/user', function(req,res){
 	}); 
 });
 
+//更新用户前先获取用户信息
+app.get('/admin/updateUser',checkLoginAdmin);
+app.get('/admin/updateUser', function(req,res){
+	var params = urlR.parse(req.url, true).query;
+	var param = params.name;
+	User.get(param,function(err,result){
+		if(!result){
+			return res.json({error:1});
+		}else{
+			return res.json(result);
+		}
+	});
+});
+//更新用户视图
+app.get('/admin/updateUserView',checkLoginAdmin);
+app.get('/admin/updateUserView', function(req,res){
+	res.render('adminView/userUpdate',{
+			title:'食品网上直销系统',
+			success:req.flash('success').toString(),
+			error:req.flash('error').toString()
+	}); 
+});
+//更新用户信息
+app.post('/admin/updateUserInfo',checkLoginAdmin);
+app.post('/admin/updateUserInfo', function(req,res){
+	var name=req.body.name;
+	var email=req.body.email;
+	var contact=req.body.contact;
+	var newUser= {
+		"name":name,
+		"email":email,
+		"contact":contact
+	};
+	Admin.updateUser(newUser, function(err, result){
+		if(!result){
+			return res.json({error:1});
+		}else{
+			return res.json({success:1});
+		}
+	});
+});
 
+//删除用户信息
+app.get('/admin/deleteUser',checkLoginAdmin);
+app.get('/admin/deleteUser', function(req,res){
+	var params = urlR.parse(req.url, true).query;
+	var name = params.name;
+	Admin.removeUser(name, function(err, result){
+		if(err){
+			return res.json({error:1});
+		}else{
+			return res.json({success:1});
+		}
+	});
+});
+//管理员退出
+app.get('/admin/adminLogout',checkLoginAdmin);
+app.get('/admin/adminLogout', function(req,res){
+	req.session.admin=null;
+ 	req.flash('success','登出成功');
+ 	//res.redirect('/admin');
+ 	res.end();
+});
+
+//获取商品列表视图
+app.get('/admin/posts',checkLoginAdmin);
+app.get('/admin/posts', function(req,res){
+	res.render('adminView/posts',{
+			title:'食品网上直销系统',
+			success:req.flash('success').toString(),
+			error:req.flash('error').toString()
+	}); 
+});
+//获取商品列表
+app.get('/admin/postsList',checkLoginAdmin);
+app.get('/admin/postsList', function(req,res){
+	var params = urlR.parse(req.url, true).query;
+	Admin.getPostsList(params, function(err, postsList){
+		if(!postsList){
+			return res.json({error:1});
+		}
+		return res.json(postsList);
+	})
+});
+//删除商品
+app.get('/admin/deletePosts',checkLoginAdmin);
+app.get('/admin/deletePosts', function(req,res){
+	var params = urlR.parse(req.url, true).query;
+	var id = params.id;
+	console.log(id);
+
+	Admin.removePosts(id,function(err,result){
+		if(err){
+			return res.json({error:1});
+		}else{
+			return res.json({success:1});
+		}
+	})
+});
 	//app.get('/') not login
 
 	app.get('/',checkNotLogin);
@@ -101,7 +200,6 @@ app.get('/admin/user', function(req,res){
 	app.post('/login',function(req,res){
 		var name=req.body.name;
 		var password=req.body.password;
-		console.log(password);
 		var md5=crypto.createHash('md5');
 		var password=md5.update(password).digest('hex');
 		var err=0;
@@ -1154,7 +1252,7 @@ function checkNotLogin(req,res,next){
 }
 //checkLoginAdmin
 function checkLoginAdmin(req,res,next){
-	console.log('req.session.admin');
+	console.log(req.session.admin);
 	if(!req.session.admin){
 		req.flash('error','未登录');
 		return res.redirect('/admin');
