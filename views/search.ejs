@@ -1,0 +1,9 @@
+<%- include header %>
+<ul class="archive">
+
+<% posts.forEach(function (post, index) { %>
+    <li><img src=<%=post.pic%> class="img-responsive" /></li>
+    <li><a href="/p/<%= post.pid %>"><%= post.name %></a></li>
+<% }) %>
+</ul>
+<%- include footer %>

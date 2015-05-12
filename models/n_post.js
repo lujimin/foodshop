@@ -18,76 +18,76 @@ module.exports=Post;
 //save post start
 Post.prototype.save=function(callback){
 
-var date=new Date();
+	var date=new Date();
 
-var time={date:date,
-	year:date.getFullYear(),
-	month:date.getFullYear()+"-"+(date.getMonth()+1),
-	day : date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate(),
-	minute : date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes()
-};
+	var time={date:date,
+		year:date.getFullYear(),
+		month:date.getFullYear()+"-"+(date.getMonth()+1),
+		day : date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate(),
+		minute : date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes()
+	};
 
-var post={
-"name":this.name,
-"pic":this.pic,
-"price":this.price,
-"brand":this.brand,
-"desp":this.desp,
-"ldesp":this.ldesp,
-"sex":this.sex,
-"boss":this.boss,
-"show":this.show,
-"time":time,
-"sold":0,
-"pv":0,
-"comments":[],
-"onsale":1,
-};
+	var post={
+		"name":this.name,
+		"pic":this.pic,
+		"price":this.price,
+		"brand":this.brand,
+		"desp":this.desp,
+		"ldesp":this.ldesp,
+		"sex":this.sex,
+		"boss":this.boss,
+		"show":this.show,
+		"time":time,
+		"sold":0,
+		"pv":0,
+		"comments":[],
+		"onsale":1,
+	};
 
-mongodb.open(function(err,db){
-if(err){return callback(err);}
+	mongodb.open(function(err,db){
+		if(err){return callback(err);}
 
-db.collection('ids',function(err,collection){
-	collection.findAndModify({"name":"product"},[], {$inc:{'id':1}}, {new:true, upsert:true},function(err,doc){
-	db.collection('posts',function(err,collection){
-		if(err){mongodb.close();
-			return callback(err);}
-			console.log("ceshi"+doc.id);
-			var newpost={"pid":doc.id,
-			"name":post.name,
-			"pic":post.pic,
-			"price":post.price,
-			"brand":post.brand,
-			"desp":post.desp,
-			"ldesp":post.ldesp,
-			"sex":post.sex,
-			"boss":post.boss,
-			"show":post.show,
-			"time":post.time,
-			"pv":post.pv,
-			"sold":post.sold,
-			"onsale":post.onsale,
-			"comments":post.comments};
-		collection.insert(newpost,{safe:true},function(err,post){
+		db.collection('ids',function(err,collection){
+			collection.findAndModify({"name":"product"},[], {$inc:{'id':1}}, {new:true, upsert:true},function(err,doc){
+				db.collection('posts',function(err,collection){
+					if(err){mongodb.close();
+						return callback(err);}
+						console.log("ceshi"+doc.id);
+						var newpost={"pid":doc.id,
+						"name":post.name,
+						"pic":post.pic,
+						"price":post.price,
+						"brand":post.brand,
+						"desp":post.desp,
+						"ldesp":post.ldesp,
+						"sex":post.sex,
+						"boss":post.boss,
+						"show":post.show,
+						"time":post.time,
+						"pv":post.pv,
+						"sold":post.sold,
+						"onsale":post.onsale,
+						"comments":post.comments};
+						collection.insert(newpost,{safe:true},function(err,post){
 
-	mongodb.close();
-	callback(err,post);
+							mongodb.close();
+							callback(err,post);
+
+						});
+
+
+					});
+
+
+
+			});
+
+		});
+
+
+
 
 	});
-
-
-	});
-
-
-
-});
-
-	});
-
-
-
-
-});
 
 
 
@@ -100,29 +100,29 @@ db.collection('ids',function(err,collection){
 
 Post.getBoss=function(name,callback){
 
-mongodb.open(function(err,db){
-if(err){return callback(err);}
-db.collection('posts',function(err,collection){
-if(err){mongodb.close();return callabck(err);}
-var query={};
-if(name){
-query.boss=name;
-}
+	mongodb.open(function(err,db){
+		if(err){return callback(err);}
+		db.collection('posts',function(err,collection){
+			if(err){mongodb.close();return callabck(err);}
+			var query={};
+			if(name){
+				query.boss=name;
+			}
 
-collection.find(query).sort({time:-1}).toArray(function(err,docs){
+			collection.find(query).sort({time:-1}).toArray(function(err,docs){
 
-mongodb.close();
-if(err){callback(err,null);}
-callback(null,docs);
-
-
-});
+				mongodb.close();
+				if(err){callback(err,null);}
+				callback(null,docs);
 
 
-});
+			});
 
 
-});
+		});
+
+
+	});
 
 
 };
@@ -130,29 +130,29 @@ callback(null,docs);
 //get post start
 Post.get=function(pid,callback){
 
-mongodb.open(function(err,db){
-if(err){return callback(err);}
-db.collection('posts',function(err,collection){
-if(err){mongodb.close();return callabck(err);}
-var query={};
-if(pid){
-query.pid=parseInt(pid);
-}
+	mongodb.open(function(err,db){
+		if(err){return callback(err);}
+		db.collection('posts',function(err,collection){
+			if(err){mongodb.close();return callabck(err);}
+			var query={};
+			if(pid){
+				query.pid=parseInt(pid);
+			}
 
-collection.find(query).sort({time:-1}).toArray(function(err,docs){
+			collection.find(query).sort({time:-1}).toArray(function(err,docs){
 
-mongodb.close();
-if(err){callback(err,null);}
-callback(null,docs);
-
-
-});
+				mongodb.close();
+				if(err){callback(err,null);}
+				callback(null,docs);
 
 
-});
+			});
 
 
-});
+		});
+
+
+	});
 
 
 };
@@ -160,39 +160,39 @@ callback(null,docs);
 //get one shop ad
 
 Post.getAd=function(boss,callback){
-mongodb.open(function(err,db){
+	mongodb.open(function(err,db){
 
-if(err){
+		if(err){
 
-return callback(err);
-}
+			return callback(err);
+		}
 
-db.collection('posts',function(err,collection){
-	if(err){mongodb.close();
-		return callback(err);}
-	var query={};
-	if(boss){
-		query.boss=boss;	
-	}
-	query.show="main";
+		db.collection('posts',function(err,collection){
+			if(err){mongodb.close();
+				return callback(err);}
+				var query={};
+				if(boss){
+					query.boss=boss;	
+				}
+				query.show="main";
 
-	collection.find(query,{limit:3}).sort({
-		
-time:-1}).toArray(function(err,doc){
-	mongodb.close();
-	if(err) {
-		
-		callback(err,null);
-	}
-	callback(null,doc);
+				collection.find(query,{limit:3}).sort({
+					
+					time:-1}).toArray(function(err,doc){
+						mongodb.close();
+						if(err) {
+							
+							callback(err,null);
+						}
+						callback(null,doc);
+
+
+					});
+
+				});
 
 
 	});
-
-});
-
-
-});
 
 
 };
@@ -202,44 +202,44 @@ time:-1}).toArray(function(err,doc){
 //getten post start
 
 Post.getTen=function(boss,brand,sex,page,callback){
-mongodb.open(function(err,db){
+	mongodb.open(function(err,db){
 
-if(err){
+		if(err){
 
-return callback(err);
-}
+			return callback(err);
+		}
 
-db.collection('posts',function(err,collection){
-	if(err){mongodb.close();
-		return callback(err);}
-	var query={};
-	if(boss){
-		query.boss=boss;	
-	}
-	if(brand){
-		query.brand=brand;	
-	}
-	if(sex){
-		query.sex=sex;	
-	}
+		db.collection('posts',function(err,collection){
+			if(err){mongodb.close();
+				return callback(err);}
+				var query={};
+				if(boss){
+					query.boss=boss;	
+				}
+				if(brand){
+					query.brand=brand;	
+				}
+				if(sex){
+					query.sex=sex;	
+				}
 
-	collection.find(query,{skip:(page-1)*10,limit:10}).sort({
-		
-time:-1}).toArray(function(err,docs){
-	mongodb.close();
-	if(err) {
-		
-		callback(err,null);
-	}
-	callback(null,docs);
+				collection.find(query,{skip:(page-1)*10,limit:10}).sort({
+					
+					time:-1}).toArray(function(err,docs){
+						mongodb.close();
+						if(err) {
+							
+							callback(err,null);
+						}
+						callback(null,docs);
+
+
+					});
+
+				});
 
 
 	});
-
-});
-
-
-});
 
 
 };
@@ -247,33 +247,33 @@ time:-1}).toArray(function(err,docs){
 
 
 Post.getBrand=function(callback){
-mongodb.open(function(err,db){
+	mongodb.open(function(err,db){
 
-if(err){
+		if(err){
 
-return callback(err);
-}
+			return callback(err);
+		}
 
-db.collection('posts',function(err,collection){
-	if(err){mongodb.close();
-		return callback(err);}
+		db.collection('posts',function(err,collection){
+			if(err){mongodb.close();
+				return callback(err);}
 
-	collection.distinct("brand",function(err,docs){
-	mongodb.close();
-	if(err) {
-		
-		callback(err,null);
-	}
-	console.log(docs.length);
-	callback(null,docs);
+				collection.distinct("brand",function(err,docs){
+					mongodb.close();
+					if(err) {
+						
+						callback(err,null);
+					}
+					console.log(docs.length);
+					callback(null,docs);
+
+
+				});
+
+			});
 
 
 	});
-
-});
-
-
-});
 
 
 };
@@ -284,25 +284,25 @@ db.collection('posts',function(err,collection){
 
 Post.getOne=function(pid,callback){
 
-mongodb.open(function(err,db){
+	mongodb.open(function(err,db){
 
-	if(err){return callback(err);}
-	db.collection('posts',function(err,collection){
-	if(err){mongodb.close();return callback(err);}
-	
-		collection.findOne({"pid":pid},function(err,doc){
-			collection.update({"pid":pid},{$inc:{"pv":1}});
-		mongodb.close();
-		if(err)
-		{
-		callback(err,null);
-		} 
+		if(err){return callback(err);}
+		db.collection('posts',function(err,collection){
+			if(err){mongodb.close();return callback(err);}
+			
+			collection.findOne({"pid":pid},function(err,doc){
+				collection.update({"pid":pid},{$inc:{"pv":1}});
+				mongodb.close();
+				if(err)
+				{
+					callback(err,null);
+				} 
 
-		callback(err,doc);
+				callback(err,doc);
 			});	
 
+		});
 	});
-});
 
 };
 
@@ -312,24 +312,24 @@ mongodb.open(function(err,db){
 
 Post.remove=function(name,callback){
 
-mongodb.open(function(err,db){
+	mongodb.open(function(err,db){
 
-	if(err){return callback(err);}
-	db.collection('posts',function(err,collection){
-	if(err){mongodb.close();return callback(err);}
-	
-	collection.remove({name:name},function(err,doc){
-	mongodb.close();
-	if(doc)
-	{
-	callback(err,doc);
-	} else {
-	callback(err,null);
-		}
+		if(err){return callback(err);}
+		db.collection('posts',function(err,collection){
+			if(err){mongodb.close();return callback(err);}
+			
+			collection.remove({name:name},function(err,doc){
+				mongodb.close();
+				if(doc)
+				{
+					callback(err,doc);
+				} else {
+					callback(err,null);
+				}
 
-		});	
+			});	
+		});
 	});
-});
 
 };
 
@@ -344,41 +344,41 @@ mongodb.open(function(err,db){
 
 Post.search=function(keyword,callback){
 
-mongodb.open(function(err,db){
-if(err){return callback(err);}
-db.collection('posts',function(err,collection){
-if(err){mongodb.close();return callabck(err);}
-var pattern = new RegExp("^.*"+keyword+".*$", "i");
-      collection.find({"name":pattern}).sort({
-        time:-1
-      }).toArray(function(err, docs){
-        mongodb.close();
-         if (err) {
-         callback(err, null);
-        }
-        callback(null, docs);
-      });
-    });
-  });
+	mongodb.open(function(err,db){
+		if(err){return callback(err);}
+		db.collection('posts',function(err,collection){
+			if(err){mongodb.close();return callabck(err);}
+			var pattern = new RegExp("^.*"+keyword+".*$", "i");
+			collection.find({"name":pattern}).sort({
+				time:-1
+			}).toArray(function(err, docs){
+				mongodb.close();
+				if (err) {
+					callback(err, null);
+				}
+				callback(null, docs);
+			});
+		});
+	});
 };
 
 //post.sold
 
 Post.sold=function(carts,callback){
 
-mongodb.open(function(err,db){
+	mongodb.open(function(err,db){
 
-	if(err){return callback(err);}
-	db.collection('posts',function(err,collection){
+		if(err){return callback(err);}
+		db.collection('posts',function(err,collection){
 
-		carts.forEach(function(cart,index){ 
-collection.update({"pid":cart.pid},{$inc:{'sold':cart.amount}});
+			carts.forEach(function(cart,index){ 
+				collection.update({"pid":cart.pid},{$inc:{'sold':cart.amount}});
+			});
+			
+			mongodb.close();
+			callback(null,1);
 		});
-		
-		mongodb.close();
-		callback(null,1);
-});
-});
+	});
 };
 
 
@@ -388,10 +388,10 @@ collection.update({"pid":cart.pid},{$inc:{'sold':cart.amount}});
 
 Post.record=function(oid,user,carts,adds,time,callback){
 
-mongodb.open(function(err,db){
+	mongodb.open(function(err,db){
 
-	if(err){callback(err,null);}
-	
+		if(err){callback(err,null);}
+		
 
 		db.collection('ids',function(err,collection){
 			if(err){
@@ -421,19 +421,19 @@ mongodb.open(function(err,db){
 							"time":time
 						}
 
-			collection.update({"pid":cart.pid},{$push:{"record":record}});
+						collection.update({"pid":cart.pid},{$push:{"record":record}});
 					});
 					mongodb.close();
 
 					callback(null,1);
 
 
-		
+					
+				});
+				
 			});
-		
-	});
 
-	});	
+		});	
 
 	});
 };
