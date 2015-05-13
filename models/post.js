@@ -244,13 +244,10 @@ Post.get=function(pid,callback){
 				console.log(post);
 				callback(null,post);
 
-
 			});
 
 
 		});
-
-
 	});
 
 
@@ -514,47 +511,44 @@ Post.getOne=function(pid,callback){
 
 Post.remove=function(id,callback){
 
-mongodb.open(function(err,db){
-	if(err){return callback(err);}
-	db.collection('posts',function(err,collection){
-	if(err){mongodb.close();return callback(err);}
-	id=parseInt(id);
-	collection.remove({pid:id},{safe:true},function(err,result){
-          mongodb.close();
-          if (err) {
-          	console.log(err);
-          callback(err,null); 
-        }else{
-          callback(null,result);
-        }
-    });
-});
-});
-}
-
-
-Post.search=function(boss,keyword,callback){
-
 	mongodb.open(function(err,db){
 		if(err){return callback(err);}
 		db.collection('posts',function(err,collection){
-			if(err){mongodb.close();return callabck(err);}
-
-
-			var query={};
-			if(boss){
-				query.boss=boss;
-			}
-			if(keyword){
-				var pattern = new RegExp("^.*"+keyword+".*$", "i");
-				query.name=pattern;
-			}
-			collection.find(query).sort({
-				time:-1
-			}).toArray(function(err, docs){
+			if(err){mongodb.close();return callback(err);}
+			id=parseInt(id);
+			collection.remove({pid:id},{safe:true},function(err,result){
 				mongodb.close();
 				if (err) {
-					callback(err, null);
+					console.log(err);
+					callback(err,null); 
+				}else{
+					callback(null,result);
+				}
+			});
+		});
+	});
+}
+
+
+Post.search = function(keyword, callback) {
+	mongodb.open(function (err, db) {
+		if (err) {
+			return callback(err);
+		}
+		db.collection('posts', function (err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var pattern = new RegExp(keyword, "i");
+			collection.find({
+				"name": pattern
+			}).sort({
+				time: -1
+			}).toArray(function (err, docs) {
+				mongodb.close();
+				if (err) {
+					return callback(err);
 				}
 				callback(null, docs);
 			});
@@ -663,32 +657,7 @@ Post.picId=function(callback){
 
 };
 
-//返回通过标题关键字查询的所有文章信息
-Post.search = function(keyword, callback) {
-  mongodb.open(function (err, db) {
-    if (err) {
-      return callback(err);
-    }
-    db.collection('posts', function (err, collection) {
-      if (err) {
-        mongodb.close();
-        return callback(err);
-      }
-      var pattern = new RegExp(keyword, "i");
-      collection.find({
-        "name": pattern
-      }).sort({
-        time: -1
-      }).toArray(function (err, docs) {
-        mongodb.close();
-        if (err) {
-         return callback(err);
-        }
-        callback(null, docs);
-      });
-    });
-  });
-};
+
 
 //post.sold.record
 
