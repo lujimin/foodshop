@@ -54,9 +54,9 @@ app.post('/admin',function(req,res){
 app.get('/admin/index',checkLoginAdmin);
 app.get('/admin/index', function(req,res){
 	res.render('adminView/index',{
-			title:'食品网上直销系统',
-			success:req.flash('success').toString(),
-			error:req.flash('error').toString()
+		title:'食品网上直销系统',
+		success:req.flash('success').toString(),
+		error:req.flash('error').toString()
 	}); 
 });
 //获取用户列表
@@ -77,9 +77,9 @@ app.get('/admin/userList', function(req,res){
 app.get('/admin/user',checkLoginAdmin);
 app.get('/admin/user', function(req,res){
 	res.render('adminView/user',{
-			title:'食品网上直销系统',
-			success:req.flash('success').toString(),
-			error:req.flash('error').toString()
+		title:'食品网上直销系统',
+		success:req.flash('success').toString(),
+		error:req.flash('error').toString()
 	}); 
 });
 
@@ -100,9 +100,9 @@ app.get('/admin/updateUser', function(req,res){
 app.get('/admin/updateUserView',checkLoginAdmin);
 app.get('/admin/updateUserView', function(req,res){
 	res.render('adminView/userUpdate',{
-			title:'食品网上直销系统',
-			success:req.flash('success').toString(),
-			error:req.flash('error').toString()
+		title:'食品网上直销系统',
+		success:req.flash('success').toString(),
+		error:req.flash('error').toString()
 	}); 
 });
 //更新用户信息
@@ -142,18 +142,18 @@ app.get('/admin/deleteUser', function(req,res){
 app.get('/admin/adminLogout',checkLoginAdmin);
 app.get('/admin/adminLogout', function(req,res){
 	req.session.admin=null;
- 	req.flash('success','登出成功');
+	req.flash('success','登出成功');
  	//res.redirect('/admin');
  	res.end();
-});
+ });
 
 //获取商品列表视图
 app.get('/admin/posts',checkLoginAdmin);
 app.get('/admin/posts', function(req,res){
 	res.render('adminView/posts',{
-			title:'食品网上直销系统',
-			success:req.flash('success').toString(),
-			error:req.flash('error').toString()
+		title:'食品网上直销系统',
+		success:req.flash('success').toString(),
+		error:req.flash('error').toString()
 	}); 
 });
 //获取商品列表
@@ -186,9 +186,9 @@ app.get('/admin/deletePosts', function(req,res){
 app.get('/admin/orders',checkLoginAdmin);
 app.get('/admin/orders', function(req,res){
 	res.render('adminView/orders',{
-			title:'食品网上直销系统',
-			success:req.flash('success').toString(),
-			error:req.flash('error').toString()
+		title:'食品网上直销系统',
+		success:req.flash('success').toString(),
+		error:req.flash('error').toString()
 	}); 
 });
 //获取订单列表
@@ -269,45 +269,63 @@ app.get('/admin/ordersList', function(req,res){
 			});
 	});
 
-app.get('/search', function (req, res) {
-  Post.search(req.query.keyword, function (err, posts) {
-    if (err) {
-      req.flash('error', err); 
-      return res.redirect('/');
-    }
-    res.render('search', {
-      title: "SEARCH:" + req.query.keyword,
-      posts: posts,
-      user: req.session.user,
-      success: req.flash('success').toString(),
-      error: req.flash('error').toString()
-    });
-  });
-});
+	app.get('/search', function (req, res) {
+		Post.search(req.query.keyword, function (err, posts) {
+			if (err) {
+				req.flash('error', err); 
+				return res.redirect('/');
+			}
+			res.render('search', {
+				title: "SEARCH:" + req.query.keyword,
+				posts: posts,
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString()
+			});
+		});
+	});
 	//app.get('/index') login
 	app.get('/index',checkLogin);
 	app.get('/index',function(req,res){
-		var page=req.query.page?parseInt(req.query.page):1;
+		var state=req.params.state?parseInt(req.params.state):1;
 		Cart.getNum(req.session.user,function(err,num){
-			if(err){
-				return res.redirect('/index');			
-			}
-			var sstate=1;
-			User.getAllshop(sstate,page,function(err,shops){
+			User.getrole(req.session.user,function(err,role){
 				if(err){
 					return res.redirect('/index');			
 				}
-				res.render('index',{
-					title:'食品网上直销系统',
-					user:req.session.user,
-					num:num,
-					shops:shops,
-					length:shops.length,
-					page:page,
-					success:req.flash('success').toString(),
-					error:req.flash('error').toString()
-				});
-				
+				if(role!=3){
+					var page=req.query.page?parseInt(req.query.page):1;
+					
+					if(err){
+						return res.redirect('/index');			
+					}
+					Post.getTen('admin',null,null,null,state,page,function(err,posts){
+						if(err){
+							return res.redirect('/index');			
+						}
+						res.render('index',{
+							title:'商品管理',
+							user:req.session.user,
+							posts:posts,
+							num:num,
+							page:page,
+							state:state,
+							length:posts.length,
+							success:req.flash('success').toString(),
+							error:req.flash('error').toString()
+						});
+						
+					});
+				}else{
+					req.flash('error',"权限不够");
+					res.render('index',{
+						title:'订单查询－权限',
+						user:req.session.user,
+						num:num,
+						error:req.flash('error').toString()
+					});
+
+				}
 			});
 		});
 	});
