@@ -113,7 +113,7 @@
 				购物车
 				</div>
 				<div class="col-xs-9 info">
-				<%if(carts.length<2){%>亲，快去购物吧，伦家口袋都快空了!<%}%>
+				<%if(carts.length<2){%>购物车空空的，快去购物吧!<%}%>
 				</div>
 			</div>
 		<hr>
@@ -247,7 +247,7 @@ $("#order").click(function(){
 				success:function(data){
 					$("#cartitems").remove();
 					$("#total").remove();
-					$("#ordertips").text("订单已经生成，小熊已经在为您准备货物了呢～");
+					$("#ordertips").text("订单已经生成，我们正准备为您发货呢～");
 					$("#cartno").text(0);
 				}
 				});

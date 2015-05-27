@@ -1,6 +1,6 @@
 module.exports={
-cookieSecret:'yjj',
-db:'yjj',
+cookieSecret:'food',
+db:'food',
 host:'localhost'
 
 };

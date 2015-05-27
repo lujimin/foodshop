@@ -11,7 +11,6 @@ var MongoStore = require('connect-mongo')(express);
 var settings=require('./settings');
 var flash=require('connect-flash');
 
-
 var app = express();
 
 // all environments 
@@ -44,13 +43,9 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-
-
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
   console.log('Start Running');
 });
 
-
 routes(app);
-

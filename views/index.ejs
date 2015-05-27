@@ -1,41 +1,52 @@
 <%-include header%>
 <%-include welcome%>
 
-<span><form action="/search" method="GET"><input type="text" name="keyword" placeholder="SEARCH" class="search" /></form></span>
-
-<div class="container">
-	<%posts.forEach(function(post,index){var ostate="";
-		switch(post.state){
-			case 1:
-				ostate="普通商品";
-				break;
-				case 2:
-					ostate="热门商品";
-					break;
-					case 3:
-						ostate="下架商品";
+<div id="shops">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="input-group">
+					<div class="input-group-btn">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">搜索</button>
+					</div><!-- /btn-group -->
+					<form action="/search" method="GET"><input type="text" name="keyword" placeholder="输入您想要吃的美食吧！" class="form-control" /></form>
+				</div><!-- /input-group -->
+			</div><!-- /.col-lg-6 -->
+		</div>
+		<hr>
+		<div class="container">
+			<%posts.forEach(function(post,index){var ostate="";
+				switch(post.state){
+					case 1:
+						ostate="普通商品";
 						break;
-						default:
-						ostate="商品出现未知错误";
-					}%>
-					<div class="postitem">
-						
-						<div class="row">
-							<div class="col-xs-3">
-								<a href="/p/<%=post.pid%>"><img src=<%=post.pic%> class="img-responsive" /></a>
+						case 2:
+							ostate="热门商品";
+							break;
+							case 3:
+								ostate="下架商品";
+								break;
+								default:
+								ostate="商品出现未知错误";
+							}%>
+							<div class="postitem">
+
+								<div class="row">
+									<div class="col-xs-3">
+										<a href="/p/<%=post.pid%>"><img src=<%=post.pic%> class="img-responsive" /></a>
+									</div>
+									<div class="col-xs-9">
+										<a href="/p/<%=post.pid%>"><%=post.name%></a> <span class="price pull-right">¥:<%=post.price%></span>
+
+									</div>
+
+								</div>
+								<span class="badge pull-left">已售<%=post.sold%>关注<%=post.pv%></span>
+								<hr>
 							</div>
-							<div class="col-xs-9">
-								<a href="/p/<%=post.pid%>"><%=post.name%></a> <span class="price pull-right">¥:<%=post.price%></span>
-								
-							</div>
-							
+
+							<%})%>
 						</div>
-						<span class="badge pull-left">已售<%=post.sold%>关注<%=post.pv%></span>
-						<hr>
-					</div>
-					
-					<%})%>
-				</div>
-				<%-include page%>
-				<%-include nav%>
-				<%-include footer%>
+						<%-include page%>
+						<%-include nav%>
+						<%-include footer%>

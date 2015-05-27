@@ -1,9 +1,12 @@
 <%- include header %>
 <ul class="archive">
-
+<hr>
+食品搜索结果页面
+<hr>
 <% posts.forEach(function (post, index) { %>
-    <li><img src=<%=post.pic%> class="img-responsive" /></li>
-    <li><a href="/p/<%= post.pid %>"><%= post.name %></a></li>
+    <li><a href="/p/<%=post.pid%>"><img src=<%=post.pic%> class="img-responsive" /></li>
+    <li><a href="/p/<%= post.pid%>"><%= post.name %></a></li>
+    <hr>
 <% }) %>
 </ul>
 <%- include footer %>

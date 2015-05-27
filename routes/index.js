@@ -33,8 +33,10 @@ app.post('/admin',function(req,res){
 	console.log(password);
 	var md5=crypto.createHash('md5');
 	var password=md5.update(password).digest('hex');
+	console.log(password);
 	var err=0;
 	Admin.get(name,function(err,user){
+		console.log(err);
 		if (!user)
 			{	//用户不存在
 				return res.json({success:4});
@@ -276,7 +278,7 @@ app.get('/admin/ordersList', function(req,res){
 				return res.redirect('/');
 			}
 			res.render('search', {
-				title: "SEARCH:" + req.query.keyword,
+				title: "搜索结果:" + req.query.keyword,
 				posts: posts,
 				user: req.session.user,
 				success: req.flash('success').toString(),
@@ -304,7 +306,7 @@ app.get('/admin/ordersList', function(req,res){
 							return res.redirect('/index');			
 						}
 						res.render('index',{
-							title:'商品管理',
+							title:'主页',
 							user:req.session.user,
 							posts:posts,
 							num:num,

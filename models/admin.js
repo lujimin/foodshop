@@ -13,6 +13,7 @@ module.exports=Admin;
 
 Admin.get = function(name, callback){//读取用户信息
   //打开数据库
+  console.log("aaa");
   mongodb.open(function(err, db){
     if(err){
       return callback(err);
@@ -28,6 +29,7 @@ Admin.get = function(name, callback){//读取用户信息
         "username": name
       },function(err, doc){
         mongodb.close();
+        console.log(doc);
         if(doc){
 
           callback(null,doc);//成功！返回查询的管理员信息
