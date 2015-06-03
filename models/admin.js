@@ -13,7 +13,7 @@ module.exports=Admin;
 
 Admin.get = function(name, callback){//读取用户信息
   //打开数据库
-  console.log("aaa");
+  console.log("aaa  " + name);
   mongodb.open(function(err, db){
     if(err){
       return callback(err);
@@ -21,20 +21,22 @@ Admin.get = function(name, callback){//读取用户信息
     //读取 admin 集合
     db.collection('admin', function(err, collection){
       if(err){
+        
         mongodb.close();
         return callback(err);
       }
+      
       //查找用户名 name 值为 name文档
       collection.findOne({
         "username": name
       },function(err, doc){
         mongodb.close();
-        console.log(doc);
+       
         if(doc){
-
+          
           callback(null,doc);//成功！返回查询的管理员信息
-	  //       console.log(doc);
-  } else {
+        } else {
+          
           callback(err, null);//失败！返回null
         }
       });
@@ -54,6 +56,8 @@ Admin.getUserList = function(params, callback){
       //数据库分页
       var page = parseInt(params.page);
       var size = parseInt(params.size);
+      var userName = params.searchName;
+      console.log("userName: " + userName);
       page = (page-1)*size;
       console.log(page + "  " + size);
       if(err){
@@ -61,23 +65,36 @@ Admin.getUserList = function(params, callback){
         return callback(err);
       }
       var totalSize = {};
-      collection.count(function(err, result){
-        console.log(result);
-        totalSize = result;
-      });
-      //查找用户名 name 值为 name文档
-      collection.find().limit(size).skip(page).toArray(function(err, doc){
-        //console.log(doc);
-        mongodb.close();
-        var result = {};
-        if(doc){
-          result.doc = doc;
-          result.totalSize = totalSize;
-          callback(null,result);//成功！返回查询的管理员信息
-        } else {
-          callback(err, null);//失败！返回null
-        }
-      });
+      if(userName && userName.trim() != ""){
+          collection.findOne({"name": userName},function(err, doc){
+            mongodb.close();
+            var result = {};
+            if(doc){
+                result.doc = doc;
+                callback(null,result);//成功！返回查询的用户信息
+              } else {
+                callback(err, null);//失败！返回null
+              }
+          });
+      }else{
+        collection.count(function(err, result){
+          console.log(result);
+          totalSize = result;
+          //查找用户名 name 值为 name文档
+        collection.find().limit(size).skip(page).toArray(function(err, doc){
+          //console.log(doc);
+          mongodb.close();
+          var result = {};
+          if(doc){
+            result.doc = doc;
+            result.totalSize = totalSize;
+            callback(null,result);//成功！返回查询的管理员信息
+          } else {
+            callback(err, null);//失败！返回null
+          }
+        });
+        });
+      }
     });
   });
 }
@@ -113,30 +130,54 @@ Admin.getPostsList = function(params, callback){
       //数据库分页
       var page = parseInt(params.page);
       var size = parseInt(params.size);
+      var searchName = params.searchName;
       page = (page-1)*size;
       console.log(page + "  " + size);
       if(err){
         mongodb.close();
         return callback(err);
       }
-      var totalSize = {};
-      collection.count(function(err, result){
-        console.log(result);
-        totalSize = result;
-      });
-      //查找用户名 name 值为 name文档
-      collection.find().limit(size).skip(page).toArray(function(err, doc){
-        //console.log(doc);
-        var result = {};
-        mongodb.close();
-        if(doc){
-          result.doc = doc;
-          result.totalSize = totalSize;
-          callback(null,result);//成功！返回查询的管理员信息
-        } else {
-          callback(err, null);//失败！返回null
-        }
-      });
+      if(!searchName || searchName.trim() == ""){
+        var totalSize = {};
+        collection.count(function(err, result){
+          console.log("err: " + err);
+          console.log("count: " + result);
+          totalSize = result;
+            //查找用户名 name 值为 name文档
+          collection.find().limit(size).skip(page).toArray(function(err, doc){
+            //console.log(doc);
+            var result = {};
+            mongodb.close();
+            if(doc){
+              result.doc = doc;
+              result.totalSize = totalSize;
+              callback(null,result);//成功！返回查询的管理员信息
+            } else {
+              callback(err, null);//失败！返回null
+            }
+          });
+        });
+      }else{
+        var totalSize = {};
+        collection.count({"name": searchName},function(err, result){
+          console.log("err: " + err);
+          console.log("count: " + result);
+          totalSize = result;
+          //查找用户名 name 值为 name文档
+          collection.find({"name": searchName}).limit(size).skip(page).toArray(function(err, doc){
+            //console.log(doc);
+            var result = {};
+            mongodb.close();
+            if(doc){
+              result.doc = doc;
+              result.totalSize = totalSize;
+              callback(null,result);//成功！返回查询的管理员信息
+            } else {
+              callback(err, null);//失败！返回null
+            }
+          });
+        }); 
+      }
     });
   });
 }
@@ -165,30 +206,46 @@ Admin.getOrdersList = function(params, callback){
       //数据库分页
       var page = parseInt(params.page);
       var size = parseInt(params.size);
+      var orderNum = params.searchNum;
+      console.log("orderNum: "+ orderNum);
       page = (page-1)*size;
       console.log(page + "  " + size);
       if(err){
         mongodb.close();
         return callback(err);
       }
-      var totalSize = {};
-      collection.count(function(err, result){
-        console.log(result);
-        totalSize = result;
-      });
-      //查找用户名 name 值为 name文档
-      collection.find().limit(size).skip(page).toArray(function(err, doc){
-        //console.log(doc);
-        var result = {};
-        mongodb.close();
-        if(doc){
-          result.doc = doc;
-          result.totalSize = totalSize;
-          callback(null,result);//成功！返回查询的管理员信息
-        } else {
-          callback(err, null);//失败！返回null
-        }
-      });
+      if(orderNum && orderNum.trim() != ""){
+          orderNum = parseInt(orderNum);
+          collection.findOne({"oid": orderNum},function(err, doc){
+            mongodb.close();
+            var result = {};
+            if(doc){
+                result.doc = doc;
+                callback(null,result);//成功！返回查询的用户信息
+              } else {
+                callback(err, null);//失败！返回null
+              }
+          });
+      }else{
+        var totalSize = {};
+        collection.count(function(err, result){
+          console.log(result);
+          totalSize = result;
+          //查找用户名 name 值为 name文档
+        collection.find().limit(size).skip(page).toArray(function(err, doc){
+          //console.log(doc);
+          var result = {};
+          mongodb.close();
+          if(doc){
+            result.doc = doc;
+            result.totalSize = totalSize;
+            callback(null,result);//成功！返回查询的管理员信息
+          } else {
+            callback(err, null);//失败！返回null
+          }
+        });
+        });
+      }
     });
   });
 }

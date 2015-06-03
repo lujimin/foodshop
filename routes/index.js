@@ -36,16 +36,14 @@ app.post('/admin',function(req,res){
 	console.log(password);
 	var err=0;
 	Admin.get(name,function(err,user){
-		console.log(err);
 		if (!user)
-			{	//用户不存在
-				return res.json({success:4});
-			}
-			if(user.password != password)
-			{	
-				return res.json({success:3});
-			}
-			console.log(user);
+		{	//用户不存在
+			return res.json({success:4});
+		}
+		if(user.password != password)
+		{	
+			return res.json({success:3});
+		}
 			req.session.admin=user.username;
 			res.json({success:1});
 		});

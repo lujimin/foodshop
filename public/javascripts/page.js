@@ -17,10 +17,16 @@ function createPage(pageSize, buttons, total, kind) {
 }
 
 function userKind(pageIndex){
+	var searchName = $("#searchName").val();
+	if(searchName && searchName.trim() != ""){
+    		setSearchResult(searchName);
+    		return;
+    }
+	if(!searchName) searchName = "";
 	$.ajax({
 	            	type:"GET",
 	            	//预留，数据库分页
-	            	url:"http://localhost:8888/admin/userList?page="+(pageIndex+1)+"&size=10",
+	            	url:"http://localhost:8888/admin/userList?page="+(pageIndex+1)+"&size=10&searchName="+searchName,
 	            	success:function(data){
 	            			var html;
           					for (var i = 0; i < data.doc.length; i++) {
@@ -49,11 +55,13 @@ function userKind(pageIndex){
 }
 
 function postKind(pageIndex){
+	var searchName = $("#searchPostName").val();
 	$.ajax({
 	            	type:"GET",
 	            	//预留，数据库分页
-	            	url:"http://localhost:8888/admin/postsList?page="+(pageIndex+1)+"&size=10",
+	            	url:"http://localhost:8888/admin/postsList?page="+(pageIndex+1)+"&size=10&searchName="+searchName,
 	            	success:function(data){
+	            			$("#contextBody").empty();
 	            			var html;
           					for (var i = 0; i < data.doc.length; i++) {
           						var pid = data.doc[i].pid;
@@ -86,6 +94,11 @@ function postKind(pageIndex){
 }
 
 function orderKind(pageIndex){
+	var searchName = $("#searchNum").val();
+	if(searchName && searchName.trim() != ""){
+		setOrderSearchResult(searchName);
+		return;
+	}
 	$.ajax({
 	            	type:"GET",
 	            	//预留，数据库分页

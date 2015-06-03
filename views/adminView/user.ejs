@@ -25,11 +25,13 @@
 
 <div class="row">
 <div class="col-xs-12">
-	<div class="hr hr-18 dotted hr-double"></div>
-	
 	<div class="row">
 		<div class="col-xs-12">
-			<h3 class="header smaller lighter blue">用户列表</h3>
+			<h3 class="header smaller lighter blue">用户列表
+			</h3>
+			<div class="input-append" style="height: 38px;">
+				<input class="span2 search-query" type="text" id="searchName" placeholder="用户名" />&nbsp;<button style="height:36px;border:none"  class="btn btn-primary" onclick="searchUser()">搜索</button>
+			</div>
 			<div class="table-responsive">
 				<table id="sample-table-2" class="table table-striped table-bordered table-hover">
 					<thead>
@@ -92,7 +94,7 @@
           				createPage(10,5,data.totalSize,1);
 	            	}
           		});
-          function getList(page){
+         /* function getList(page){
           	$.ajax({
 	            	type:"GET",
 	            	//预留，数据库分页
@@ -115,7 +117,7 @@
           				jsPage("userPage",data.total,10,1,getList);
 	            	}
           		});
-          }
+          }*/
          function updateUser(name){
          	$.ajax({
 	            	type:"GET",
@@ -197,4 +199,59 @@
 	            	}
           	});
          }
+    function setSearchResult(searchName){
+    	$.ajax({
+	            	type:"GET",
+	            	//预留，数据库分页
+	            	url:"http://localhost:8888/admin/userList?page=1&size=10&searchName="+searchName,
+	            	success:function(data){
+	            			$("#contextBody").empty();
+          						var uid = data.doc.uid;
+          						var name = data.doc.name;
+	          					var role = data.doc.role;
+	          					if(role==1){
+	          						role="买家";
+	          					}else{
+	          						role="卖家";
+	          					}
+	          					var email = data.doc.email;
+	          					var phone = data.doc.contact;
+	          					var time = data.doc.time.minute;
+	          					$("#contextBody").append("<tr><td class=\"center\"><label><input type=\"checkbox\" class=\"ace\" /><span class=\"lbl\"></span></label></td><td><a href=\"#\">"+name+"</a></td><td>"+role+"</td><td class=\"hidden-480\">"+email+"</td><td>"+phone+"</td><td class=\"hidden-480\"><span class=\"label label-primary\" style=\"font-size:15px;\">"+time+"</span></td><td class=\"hidden-480\"><a href=\"javascript:void(0)\" onclick=\"updateUser('"+name+"')\" class=\"btn btn-small btn-success \">编辑</a>&nbsp;<a href=\"javascript:void(0)\" onclick=\"deleteUser('"+name+"')\" class=\"btn btn-small btn-success \">删除</a></td></tr>");
+          					createPage(10,5,1,1);
+          				}
+          		});
+    }
+    //根据用户名搜索
+    function searchUser(){
+    	var searchName = $("#searchName").val();
+    	if(searchName && searchName.trim() != ""){
+    		setSearchResult(searchName);
+    		return;
+    	}
+    	if(!searchName) searchName="";
+    	$.ajax({
+	            	type:"GET",
+	            	//预留，数据库分页
+	            	url:"http://localhost:8888/admin/userList?page=1&size=10&searchName="+searchName,
+	            	success:function(data){
+	            			$("#contextBody").empty();
+          					for (var i = 0; i < data.doc.length; i++) {
+          						var uid = data.doc[i].uid;
+          						var name = data.doc[i].name;
+	          					var role = data.doc[i].role;
+	          					if(role==1){
+	          						role="买家";
+	          					}else{
+	          						role="卖家";
+	          					}
+	          					var email = data.doc[i].email;
+	          					var phone = data.doc[i].contact;
+	          					var time = data.doc[i].time.minute;
+	          					$("#contextBody").append("<tr><td class=\"center\"><label><input type=\"checkbox\" class=\"ace\" /><span class=\"lbl\"></span></label></td><td><a href=\"#\">"+name+"</a></td><td>"+role+"</td><td class=\"hidden-480\">"+email+"</td><td>"+phone+"</td><td class=\"hidden-480\"><span class=\"label label-primary\" style=\"font-size:15px;\">"+time+"</span></td><td class=\"hidden-480\"><a href=\"javascript:void(0)\" onclick=\"updateUser('"+name+"')\" class=\"btn btn-small btn-success \">编辑</a>&nbsp;<a href=\"javascript:void(0)\" onclick=\"deleteUser('"+name+"')\" class=\"btn btn-small btn-success \">删除</a></td></tr>");
+          					}
+          				createPage(10,5,data.totalSize,1);
+	            	}
+          		});
+    }
 </script>

@@ -28,7 +28,7 @@
             function init() {
             	$this.find('li').remove();
             	c.maxPages = Math.ceil(c.total/c.pageSize);
-            	
+            	console.log(c.maxPages);
             	if(c.maxPages < 1) return; 
             	
             	$this.append('<li class="disabled"><a class="pre">上一页</a></li>');
